@@ -10,7 +10,7 @@ load('wsn.mat');
 figure(1);
 bit = 4000;
 
-for r=1:1:300
+for r=1:1:rmax
     r
     figure(1);
     hold off;
@@ -26,8 +26,7 @@ for r=1:1:300
             dead=dead+1;
             S(i).state='DEAD';
             hold on;
-        end
-        if(S(i).RE>0)
+        else
             S(i).type='N';
             S(i).state='Initial_State';
             plot(S(i).xd,S(i).yd,'o');
@@ -57,11 +56,11 @@ for r=1:1:300
            S(i).distoBS = sqrt( (S(i).xd-S(n+1).xd)^2 + (S(i).yd-S(n+1).yd)^2);
 
            % compute Td 
-           fis1 = readfis('dis_Fuzzyfitness1');
+           % fis1 = readfis('dis_Fuzzyfitness1');
            Energy_level = S(i).RE/S(i).Initial_energy;
            S(i).Fuzzy_fitness1 = evalfis([Energy_level S(i).distoBS], fis1);
 
-           fis2 = readfis('dis_Fuzzyfitness2');
+           % fis2 = readfis('dis_Fuzzyfitness2');
            S(i).Fuzzy_fitness2 = evalfis([S(i).neigh_des S(i).neigh_cost], fis2);
 
            % random alpha from [0.9 1]
@@ -98,7 +97,7 @@ for r=1:1:300
 
        if (i == CH_selection)
            S(i).type = 'CH';
-           fis3 = readfis('Cluster.radius');
+           % fis3 = readfis('Cluster.radius');
            S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2], fis3);
 
            S(i).number_worker = 0;
@@ -191,7 +190,7 @@ for r=1:1:300
     %Reduce energy
     %Initial Energy bit
     %Eb = 1e-9;
-    Eb=1e-6;
+    Eb=1e-9;
     Energy_Transmission = 0;
     % for ab=1:1:200
     for i = 1:1:length(CH_number)
