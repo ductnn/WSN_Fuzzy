@@ -30,6 +30,9 @@ rmax = 1000;
 d0 = sqrt(Efs/Emp);
  
 bit = 4000;
+fis1 = readfis('dis_Fuzzyfitness1');           
+fis2 = readfis('dis_Fuzzyfitness2');               
+fis3 = readfis('Cluster.radius');
 
 %Creation of the random Sensor Network
 figure(1);
