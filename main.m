@@ -10,7 +10,7 @@ load('wsn.mat');
 figure(1);
 bit = 4000;
 
-for r=1:1:rmax
+for r=1:1:1500
     r
     figure(1);
     hold off;
@@ -104,6 +104,7 @@ for r=1:1:rmax
            cluster = cluster +1;
 
            plot(S(i).xd,S(i).yd,'k*');
+           % plot(S(i), S(i-1), '-');
            % compute node j received from i
            for t= 1:1:n
              if ((isequal(S(t).type,'N') || isequal(S(t).type,'W'))&& (S(t).RE >0))
@@ -112,12 +113,15 @@ for r=1:1:rmax
                     k = length(S(t).candidate) + 1;
                     S(t).type = 'W';
                     S(t).candidate(k) = i;
+                    plot([S(i).xd,S(t).xd], [S(i).yd, S(t).yd], 'red');
+                    
                 end
              end  
+             
            end
        end
      end
-
+     
      number_normal_node = 0;
      for i= 1:1:n
         if (isequal(S(i).type,'N') && (S(i).RE >0))
@@ -190,7 +194,7 @@ for r=1:1:rmax
     %Reduce energy
     %Initial Energy bit
     %Eb = 1e-9;
-    Eb=1e-9;
+    Eb=1e-8;
     Energy_Transmission = 0;
     % for ab=1:1:200
     for i = 1:1:length(CH_number)
