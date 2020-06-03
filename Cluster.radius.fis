@@ -1,0 +1,73 @@
+[System]
+Name='Cluster.radius'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=25
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='Ff1'
+Range=[0 1]
+NumMFs=5
+MF1='veryweak':'trapmf',[-30 0 0.1 0.2]
+MF2='weak':'trimf',[0.2 0.25 0.45]
+MF3='medium':'trimf',[0.3 0.5 0.6]
+MF4='strong':'trimf',[0.45 0.65 0.8]
+MF5='verystrong':'trapmf',[0.7 0.8 1 30]
+
+[Input2]
+Name='Ff2'
+Range=[0 1]
+NumMFs=5
+MF1='verylow':'trapmf',[-30 0 0.15 0.25]
+MF2='low':'trimf',[0.1 0.25 0.45]
+MF3='medium':'trimf',[0.25 0.4 0.6]
+MF4='high':'trimf',[0.5 0.6 0.9]
+MF5='veyhigh':'trapmf',[0.7 0.85 1 30]
+
+[Output1]
+Name='Cluster.Radius'
+Range=[10 20]
+NumMFs=9
+MF1='VVsmall':'trapmf',[-30 10 11 12.5]
+MF2='Vsmall':'trimf',[12 13 14]
+MF3='small':'trimf',[13 13.5 14.5]
+MF4='Medsmall':'trimf',[14.0154320987654 14.7154320987654 15.5154320987654]
+MF5='medium':'trimf',[15 15.5 16]
+MF6='Medlong':'trimf',[15.5 16.5 17]
+MF7='Fairlylong':'trimf',[17 17.5 18]
+MF8='long':'trimf',[17.5 18 19]
+MF9='Vlong':'trapmf',[18.5 19 20 30]
+
+[Rules]
+5 5, 8 (1) : 1
+5 4, 6 (1) : 1
+5 3, 6 (1) : 1
+5 2, 5 (1) : 1
+5 1, 5 (1) : 1
+4 5, 4 (1) : 1
+4 4, 3 (1) : 1
+4 3, 3 (1) : 1
+4 2, 2 (1) : 1
+4 1, 1 (1) : 1
+3 5, 5 (1) : 1
+3 4, 4 (1) : 1
+3 3, 4 (1) : 1
+3 2, 2 (1) : 1
+3 1, 1 (1) : 1
+2 5, 8 (1) : 1
+2 4, 8 (1) : 1
+2 3, 7 (1) : 1
+2 2, 6 (1) : 1
+2 1, 9 (1) : 1
+1 5, 7 (1) : 1
+1 4, 7 (1) : 1
+1 3, 2 (1) : 1
+1 2, 6 (1) : 1
+1 1, 6 (1) : 1
