@@ -10,7 +10,7 @@ load('wsn.mat');
 figure(1);
 bit = 4000;
 
-for r=1:1:1500
+for r=1:1:2000
     r
     figure(1);
     hold off;
@@ -22,7 +22,7 @@ for r=1:1:1500
     for i=1:1:n
         %checking if there is a dead node
         if (S(i).RE<=0)
-            plot(S(i).xd,S(i).yd,'red D');
+            plot(S(i).xd,S(i).yd,'red +');
             dead=dead+1;
             S(i).state='DEAD';
             hold on;
@@ -104,6 +104,7 @@ for r=1:1:1500
            cluster = cluster +1;
 
            plot(S(i).xd,S(i).yd,'k*');
+           
            % plot(S(i), S(i-1), '-');
            % compute node j received from i
            for t= 1:1:n
@@ -113,12 +114,16 @@ for r=1:1:1500
                     k = length(S(t).candidate) + 1;
                     S(t).type = 'W';
                     S(t).candidate(k) = i;
-                    plot([S(i).xd,S(t).xd], [S(i).yd, S(t).yd], 'red');
+                    
+                    
+                    plot([S(t).xd,S(i).xd], [S(t).yd, S(i).yd], 'red');
                     
                 end
+                
              end  
-             
+             % plot([S(i).xd,S(t).xd], [S(i).yd, S(t).yd], 'red');
            end
+           
        end
      end
      
@@ -194,7 +199,7 @@ for r=1:1:1500
     %Reduce energy
     %Initial Energy bit
     %Eb = 1e-9;
-    Eb=1e-8;
+    Eb=1e-9;
     Energy_Transmission = 0;
     % for ab=1:1:200
     for i = 1:1:length(CH_number)
