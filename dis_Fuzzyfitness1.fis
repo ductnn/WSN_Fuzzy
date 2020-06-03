@@ -1,0 +1,49 @@
+[System]
+Name='clusform1'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=9
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='Energy.level'
+Range=[0 1]
+NumMFs=3
+MF1='Small':'trapmf',[0 0 0.15 0.5]
+MF2='Average':'trimf',[0 0.5 1]
+MF3='High':'trapmf',[0.5 0.85 1 1]
+
+[Input2]
+Name='DisttoBS'
+Range=[0 120]
+NumMFs=3
+MF1='Near':'trapmf',[-25 0 15 60]
+MF2='Modarate':'trimf',[0 60 120]
+MF3='Distant':'trapmf',[60 105 120 168]
+
+[Output1]
+Name='Fuzzy.fitness1'
+Range=[0 1]
+NumMFs=5
+MF1='Very.weak':'trapmf',[0 0 0.1 0.2]
+MF2='Weak':'trimf',[0.2 0.25 0.45]
+MF3='Medium':'trimf',[0.3 0.5 0.6]
+MF4='Strong':'trimf',[0.45 0.65 0.8]
+MF5='Verystrong':'trapmf',[0.7 0.8 1 1]
+
+[Rules]
+1 1, 3 (1) : 1
+1 2, 2 (1) : 1
+1 3, 1 (1) : 1
+2 1, 4 (1) : 1
+2 2, 3 (1) : 1
+2 3, 1 (1) : 1
+3 1, 5 (1) : 1
+3 2, 4 (1) : 1
+3 3, 2 (1) : 1
