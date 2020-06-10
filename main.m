@@ -10,7 +10,7 @@ load('wsn.mat');
 figure(1);
 bit = 4000;
 
-for r=1:1:2000
+for r=1:1:1000
     r
     figure(1);
     hold off;
@@ -25,6 +25,7 @@ for r=1:1:2000
             plot(S(i).xd,S(i).yd,'red +');
             dead=dead+1;
             S(i).state='DEAD';
+            S(i).type='DEAD';
             hold on;
         else
             S(i).type='N';
@@ -32,6 +33,10 @@ for r=1:1:2000
             plot(S(i).xd,S(i).yd,'o');
             hold on;
         end
+    end
+    
+    if (dead == 1)
+        print(r);
     end
     plot(S(n+1).xd,S(n+1).yd,'x');
     text(S(n+1).xd,S(n+1).yd,'  BS','Color','b','FontWeight','b');
@@ -217,10 +222,10 @@ for r=1:1:2000
             Energy_Transmission = CH_number([CH_number.id] == path(k)).number_worker*Eb*bit + Energy_Transmission;
             CH_number([CH_number.id] == path(k)).RE = CH_number([CH_number.id] == path(k)).RE - Energy_Transmission;
             
-            % if(CH_number([CH_number.id] == path(k)).RE <= 0)
-               % CH_number([CH_number.id] == path(k)).RE = 0;
-               % S([S.id] == CH_number([CH_number.id] == path(k)).id).state = 'Dead';
-            % end
+              if(CH_number([CH_number.id] == path(k)).RE <= 0)
+                 CH_number([CH_number.id] == path(k)).RE = 0;
+                S([S.id] == CH_number([CH_number.id] == path(k)).id).state = 'Dead';
+              end
             S([S.id] == CH_number([CH_number.id] == path(k)).id).RE = CH_number([CH_number.id] == path(k)).RE;
             
             
