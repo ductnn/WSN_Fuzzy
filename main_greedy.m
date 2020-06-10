@@ -166,7 +166,7 @@ for r=1:1:10
                 if (isequal(S(j).type,'W') && (S(j).RE > 0))
                     u = [sink.x - S(i).xd, sink.y - S(i).yd];
                     v = [S(j).xd - S(i).xd, S(j).yd - S(i).yd];
-                    CosTheta = abs(dot(u,v))/(norm(u)*norm(v));
+                    CosTheta = dot(u,v)/(norm(u)*norm(v));
                     
                     distCHtoW = sqrt((S(i).xd - S(j).xd)^2 + (S(i).yd - S(j).yd)^2);
                     dist_shadow = distCHtoW*CosTheta;
