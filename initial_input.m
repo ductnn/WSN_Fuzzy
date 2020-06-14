@@ -1,3 +1,4 @@
+
 xm=100;
 ym=100;
  
@@ -55,13 +56,13 @@ for i=1:1:n
     S(i).state = 'Initial_State'
  
     %Random node distribution
-    plot(S(i).xd,S(i).yd,'o');
-    hold on;
+%     plot(S(i).xd,S(i).yd,'o');
+%     hold on;
 end
  
 S(n+1).xd=sink.x;
 S(n+1).yd=sink.y;
-plot(S(n+1).xd,S(n+1).yd,'x');
+% plot(S(n+1).xd,S(n+1).yd,'x');
 
 save('wsn.mat');
 
