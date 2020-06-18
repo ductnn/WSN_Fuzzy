@@ -192,8 +192,8 @@ for r=1:1:6000
     
     %Reduce energy
     %Initial Energy bit
-%     Eb = 1e-9;
-     Eb=1e-8;
+    Eb = 13e-9;
+%      Eb=1e-7;
 %     Energy_Transmission = 0;
     for i = 1:1:length(CH_number)
         [distance, path] = dijkstra(All_CH, segments, CH_number(i).id, 101);
@@ -207,7 +207,7 @@ for r=1:1:6000
             
             if(CH_number([CH_number.id] == path(k)).RE <= 0)
                CH_number([CH_number.id] == path(k)).RE = 0;
-               S([S.id] == CH_number([CH_number.id] == path(k)).id).state = 'Dead';
+               S([S.id] == CH_number([CH_number.id] == path(k)).id).state = 'DEAD';
             end
             S([S.id] == CH_number([CH_number.id] == path(k)).id).RE = CH_number([CH_number.id] == path(k)).RE;
             
