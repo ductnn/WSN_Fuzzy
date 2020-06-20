@@ -4,7 +4,7 @@ clc;
 
 % figure(1);
 
-load('wsn.mat');
+load('test.mat');
 figure(1);
 
 for r=1:1:6000
