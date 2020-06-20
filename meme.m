@@ -4,8 +4,8 @@ clc;
 
 % figure(1);
 
-load('wsn.mat');
-
+load('test.mat');
+Rmax = 30;
 figure(1);
 
 for r=1:1:6000
@@ -192,12 +192,13 @@ for r=1:1:6000
     
     %Reduce energy
     %Initial Energy bit
-    Eb = 13e-9;
-%      Eb=1e-7;
+%     Eb = 13e-9;
+     Eb=1e-6;
 %     Energy_Transmission = 0;
     for i = 1:1:length(CH_number)
         [distance, path] = dijkstra(All_CH, segments, CH_number(i).id, 101);
         Energy_Transmission = 0;
+        path
         if isnan(path)
             continue;
         end
@@ -208,6 +209,7 @@ for r=1:1:6000
             if(CH_number([CH_number.id] == path(k)).RE <= 0)
                CH_number([CH_number.id] == path(k)).RE = 0;
                S([S.id] == CH_number([CH_number.id] == path(k)).id).state = 'DEAD';
+               S([S.id] == CH_number([CH_number.id] == path(k)).id).type = 'DEAD';
             end
             S([S.id] == CH_number([CH_number.id] == path(k)).id).RE = CH_number([CH_number.id] == path(k)).RE;
             
@@ -215,5 +217,5 @@ for r=1:1:6000
         end
     end
     % S.RE = CH_number.RE
-    [CH_number.RE]
+%     [CH_number.RE]
 end
