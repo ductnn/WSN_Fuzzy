@@ -8,8 +8,8 @@ load('test.mat');
 Rmax = 30;
 figure(1);
 
-for r=1:1:6000
-    r
+for r=1:1:9999
+        r
     figure(1);
     hold off;
     
@@ -192,15 +192,36 @@ for r=1:1:6000
     
     %Reduce energy
     %Initial Energy bit
-%     Eb = 13e-9;
-     Eb=1e-6;
+    Eb = 13e-9;
+%      Eb=1e-6;
 %     Energy_Transmission = 0;
+    for i=1:1:n
+        if (isequal(S(i).type,'W') && (S(i).RE >0))
+            CH = S(i).CH;
+            disToCH = sqrt((S(i).xd-S(CH).xd)^2 + (S(i).yd-S(CH).yd)^2 );
+            if (disToCH < d0)
+                S(i).RE = S(i).RE - bit*(ETX + Efs*(disToCH^2));
+            end
+            if (disToCH >= d0)
+                S(i).RE = S(i).RE - bit*(ETX + Emp*(disToCH^4));
+            end
+        end
+    end
     for i = 1:1:length(CH_number)
         [distance, path] = dijkstra(All_CH, segments, CH_number(i).id, 101);
+%         path = Greedy(All_CH,CH_number(i).id,30,Rmax);
         Energy_Transmission = 0;
-        path
+        
         if isnan(path)
+            distanceNodetoCH = norm([CH_number(i).xd-50 CH_number(i).yd-50]);            
+%             S(i).RE = S(i).RE -( (ETX+EDA)*bit + Efs*bit*(distanceNodetoCH^2 ));
+            CH_number(i).RE = CH_number(i).RE - CH_number(i).number_worker*bit*(ETX+Efs*distanceNodetoCH^2);
             continue;
+            
+%             if (distanceNodetoCH >= d0)
+%                 S(i).RE = S(i).RE -( (ETX+EDA)*bit + Efs*bit*(distanceNodetoCH^4 ));
+%             end
+            
         end
         for k = 1:1:length(path)-1
             Energy_Transmission = CH_number([CH_number.id] == path(k)).number_worker*Eb*bit + Energy_Transmission;
