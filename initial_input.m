@@ -1,3 +1,4 @@
+
 xm=100;
 ym=100;
  
@@ -37,6 +38,7 @@ fis3 = readfis('Cluster.radius');
 
 %Creation of the random Sensor Network
 figure(1);
+<<<<<<< HEAD
 count = 0;
 
 for i=1:1:10
@@ -57,6 +59,29 @@ for i=1:1:10
         plot(S((i-1)*10+j).xd,S((i-1)*10+j).yd,'o');
         hold on;
     end
+=======
+for i=1:1:n
+    %Initial Energy
+    S(i).Initial_energy = 0.9;
+    S(i).RE = S(i).Initial_energy;
+    
+    % checkbox
+    S(i).xd=rand(1,1)*xm;
+    XR(i)=S(i).xd;
+    S(i).yd=rand(1,1)*ym;
+    YR(i)=S(i).yd;
+    %S(i).G=0;
+ 
+    %initially there are no cluster heads only nodes
+    S(i).type = 'N';
+    % Node identification
+    S(i).id=i;
+    S(i).state = 'Initial_State'
+ 
+    %Random node distribution
+%     plot(S(i).xd,S(i).yd,'o');
+%     hold on;
+>>>>>>> issue1
 end
 
 % for j=1:1:30
@@ -111,7 +136,7 @@ end
  
 S(n+1).xd=sink.x;
 S(n+1).yd=sink.y;
-plot(S(n+1).xd,S(n+1).yd,'x');
+% plot(S(n+1).xd,S(n+1).yd,'x');
 
 save('test.mat');
 

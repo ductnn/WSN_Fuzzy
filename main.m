@@ -10,7 +10,7 @@ load('wsn.mat');
 figure(1);
 bit = 4000;
 
-for r=1:1:1000
+for r=1:1:6000
     r
     figure(1);
     hold off;
@@ -35,9 +35,9 @@ for r=1:1:1000
         end
     end
     
-    if (dead == 1)
-        print(r);
-    end
+    STATISTICS(r+1).DEAD=dead;
+    DEAD(r+1)=dead;
+    
     plot(S(n+1).xd,S(n+1).yd,'x');
     text(S(n+1).xd,S(n+1).yd,'  BS','Color','b','FontWeight','b');
     
@@ -121,12 +121,12 @@ for r=1:1:1000
                     S(t).candidate(k) = i;
                     
                     
-                    plot([S(t).xd,S(i).xd], [S(t).yd, S(i).yd], 'red');
+                     plot([S(t).xd,S(i).xd], [S(t).yd, S(i).yd]);
                     
                 end
                 
              end  
-             % plot([S(i).xd,S(t).xd], [S(i).yd, S(t).yd], 'red');
+             % plot([S(i).xd,S(t).xd], [S(i).yd, S(t).yd]);
            end
            
        end
@@ -205,7 +205,7 @@ for r=1:1:1000
     %Initial Energy bit
     %Eb = 1e-9;
     Eb=1e-9;
-    Energy_Transmission = 0;
+%     Energy_Transmission = 0;
     % for ab=1:1:200
     for i = 1:1:length(CH_number)
         %So luong node ket noi voi 1 CH
@@ -217,15 +217,16 @@ for r=1:1:1000
         %Tinh lai gia tri nang luong khoi tao 
         % CH_number(i).RE = CH_number(i).RE - Energy_Transmission;
         %Tinh gia tri nang luong khoi tao va nang luong truyen
+        Energy_Transmission = 0;
         
         for k = 1:1:length(path)-1
             Energy_Transmission = CH_number([CH_number.id] == path(k)).number_worker*Eb*bit + Energy_Transmission;
             CH_number([CH_number.id] == path(k)).RE = CH_number([CH_number.id] == path(k)).RE - Energy_Transmission;
             
-              if(CH_number([CH_number.id] == path(k)).RE <= 0)
-                 CH_number([CH_number.id] == path(k)).RE = 0;
-                S([S.id] == CH_number([CH_number.id] == path(k)).id).state = 'Dead';
-              end
+%               if(CH_number([CH_number.id] == path(k)).RE <= 0)
+%                  CH_number([CH_number.id] == path(k)).RE = 0;
+%                 S([S.id] == CH_number([CH_number.id] == path(k)).id).state = 'Dead';
+%               end
             S([S.id] == CH_number([CH_number.id] == path(k)).id).RE = CH_number([CH_number.id] == path(k)).RE;
             
             
@@ -233,7 +234,6 @@ for r=1:1:1000
     end
     % end
     % S.RE = CH_number.RE
-    [S.type] = deal('N');
-    disp([CH_number.id]);
-   disp([CH_number.RE]);
+%     disp([CH_number.id]);
+%    disp([CH_number.RE]);
 end
