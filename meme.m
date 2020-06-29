@@ -9,7 +9,7 @@ Rmax = 30;
 figure(1);
 
 for r=1:1:9999
-        r
+    r
     figure(1);
     hold off;
     
