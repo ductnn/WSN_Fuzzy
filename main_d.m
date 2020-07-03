@@ -52,8 +52,7 @@ for i= 1:1:n
        
        % compute Td 
        Energy_level = S(i).RE/S(i).Initial_energy;
-       S(i).Fuzzy_fitness1 = evalfis([Energy_level S(i).distoBS], fis1);
-               
+       S(i).Fuzzy_fitness1 = evalfis([Energy_level S(i).distoBS], fis1);             
        S(i).Fuzzy_fitness2 = evalfis([S(i).neigh_des S(i).neigh_cost], fis2);
               
        % random alpha from [0.9 1]
@@ -179,10 +178,10 @@ for i=1:1:n
         
         disJToI = sqrt((S(i).xd-S(PN_j).xd)^2 + (S(i).yd-S(PN_j).yd)^2 );
         if (disJToI < d0)
-            Eij = ETX + Efs*(disJToI*disJToI);
+            Eij = ETX + Efs*(disJToI^2);
         end
         if (disJToI >= d0)
-            Eij = ETX + Emp*(disJToI*disJToI*disJToI*disJToI);
+            Eij = ETX + Emp*(disJToI^4);
         end
         
         TEij = (Eij + ETX)*S(i).number_worker*bit;
@@ -196,10 +195,10 @@ for i=1:1:n
             PN_j = PN(j);
             disJToI = sqrt((S(i).xd-S(PN_j).xd)^2 + (S(i).yd-S(PN_j).yd)^2 );
             if (disJToI < d0)
-                Eij = ETX + Efs*(disJToI*disJToI);
+                Eij = ETX + Efs*(disJToI^2);
             end
             if (disJToI >= d0)
-                Eij = ETX + Emp*(disJToI*disJToI*disJToI*disJToI);
+                Eij = ETX + Emp*(disJToI^4);
             end
  
             TEij = (Eij + ETX)*S(i).number_worker*bit;
@@ -226,10 +225,10 @@ for i=1:1:n
         CH = S(i).CH;
         disToCH = sqrt((S(i).xd-S(CH).xd)^2 + (S(i).yd-S(CH).yd)^2 );
         if (disToCH < d0)
-            S(i).RE = S(i).RE - bit*(ETX + Efs*(disToCH*disToCH));
+            S(i).RE = S(i).RE - bit*(ETX + Efs*(disToCH^2));
         end
         if (disToCH >= d0)
-            S(i).RE = S(i).RE - bit*(ETX + Emp*(disToCH*disToCH*disToCH*disToCH));
+            S(i).RE = S(i).RE - bit*(ETX + Emp*(disToCH^4));
         end
     end
     
@@ -243,10 +242,10 @@ for i=1:1:n
         % node i se mat them nl phat toi parent cua no
         disToParent = sqrt((S(i).xd-S(parent).xd)^2 + (S(i).yd-S(parent).yd)^2 );
         if (disToParent < d0)
-            S(i).RE = S(i).RE - S(i).number_worker*bit*(ETX + Efs*(disToParent*disToParent));
+            S(i).RE = S(i).RE - S(i).number_worker*bit*(ETX + Efs*(disToParent^2));
         end
         if (disToParent >= d0) 
-            S(i).RE = S(i).RE - S(i).number_worker*bit*(ETX + Emp*(disToParent*disToParent*disToParent*disToParent));
+            S(i).RE = S(i).RE - S(i).number_worker*bit*(ETX + Emp*(disToParent^4));
         end
     end
 end
