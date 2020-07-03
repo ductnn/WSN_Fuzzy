@@ -1,72 +1,36 @@
 clear;
-%%%%%%%%%%%%%%%%%%%%    INITIAL PRAMETERS            %%%%%%%%%%%%%%%%%%%
-%Field Dimensions - x and y maximun (in meters)
-xm=100;
-ym=100;
- 
-%x and y Coordinates of the sink
-sink.x=0.5*xm;
-sink.y=0.5*ym;
- 
-%Number of Nodes in the Field
-n=100;
- 
-%Probability of a node to become cluster head
-%p=0.1;
-Tc= 20;
- 
- 
-Rmax = 20;
- 
-%Initial Energy
-for i=1:1:n
-    S(i).Initial_energy=0.5;
-    S(i).RE=S(i).Initial_energy;
-end
- 
- 
-%Eelc=Etx=Erx
-ETX=50* 10^-9;
-ERX=50* 10^-9;
-%Transmit Amplifier types
-Efs=10* 10^-12;              
-Emp=0.0013* 10^-12;            
-%Data Aggregation Energy
-EDA=5* 10^-9;
- 
-%maximum number of round 
-rmax = 1000;
- 
-%Computation of do
-d0 = sqrt(Efs/Emp);
- 
-bit = 4000;
- %Creation of the random Sensor Network
+
+load('test.mat');
+Rmax = 30;
 figure(1);
-for i=1:1:n
-    S(i).xd=rand(1,1)*xm;
-    XR(i)=S(i).xd;
-    S(i).yd=rand(1,1)*ym;
-    YR(i)=S(i).yd;
-    %S(i).G=0;
  
-    %initially there are no cluster heads only nodes
-    S(i).type = 'N';
-    % Node identification
-    S(i).id=i;
-    S(i).state = 'Initial_State'
- 
-    %Random node distribution
-    plot(S(i).xd,S(i).yd,'o');
-    hold on;
-end
- 
-S(n+1).xd=sink.x;
-S(n+1).yd=sink.y;
-plot(S(n+1).xd,S(n+1).yd,'x');
- 
+
 for r= 1:1:rmax
+    r
 % Compute Neigbor desity & neighbor cost
+figure(1);
+    hold off;
+    
+    dead = 0;
+    for i=1:1:n
+        %checking if there is a dead node
+        if (S(i).RE<=0)
+            plot(S(i).xd,S(i).yd,'red +');
+            dead=dead+1;
+            S(i).state='DEAD';
+            S(i).type='DEAD';
+            S(i).RE = 0;
+            hold on;
+        else
+            S(i).type='N';
+            S(i).state='Initial_State';
+            plot(S(i).xd,S(i).yd,'o');
+            hold on;
+        end
+    end
+    plot(S(n+1).xd,S(n+1).yd,'x');
+    text(S(n+1).xd,S(n+1).yd,'  BS','Color','b','FontWeight','b');
+
 for i= 1:1:n
     number_neighbor_i = 0;
     sigma_neigh_cost = 0;
@@ -87,11 +51,9 @@ for i= 1:1:n
        S(i).distoBS = sqrt( (S(i).xd-S(n+1).xd)^2 + (S(i).yd-S(n+1).yd)^2);
        
        % compute Td 
-       fis1 = readfis('dis_Fuzzyfitness1');
        Energy_level = S(i).RE/S(i).Initial_energy;
        S(i).Fuzzy_fitness1 = evalfis([Energy_level S(i).distoBS], fis1);
                
-       fis2 = readfis('dis_Fuzzyfitness2');
        S(i).Fuzzy_fitness2 = evalfis([S(i).neigh_des S(i).neigh_cost], fis2);
               
        % random alpha from [0.9 1]
@@ -125,7 +87,6 @@ while number_normal_node > 0
  
    if (i == CH_selection)
        S(i).type = 'CH';
-       fis3 = readfis('Cluster.radius');
        rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2], fis3);
        S(i).rad = rad;
        S(i).number_worker = 0;
