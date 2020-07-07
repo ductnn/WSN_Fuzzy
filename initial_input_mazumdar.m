@@ -2,8 +2,8 @@ xm=100;
 ym=100;
  
 %x and y Coordinates of the sink
-sink.x=0.5*xm;
-sink.y=0.5*ym;
+sink.x=50;
+sink.y=0;
  
 %Number of Nodes in the Field
 n=100;
@@ -48,9 +48,13 @@ for i=1:1:n
     S(i).id=i;
     S(i).state = 'Initial_State';
     S(i).distoBS = norm([S(i).xd-50 S(i).yd-50]);
-    plot(S(i).xd,S(i).yd,'o');
+    plot(S(i).xd,S(i).yd,'o','MarkerFaceColor','b');
     hold on;
 end
 S(n+1).xd = sink.x;
 S(n+1).yd = sink.y;
-save('mazumdar.mat');
+plot(sink.x, sink.y, 's', 'MarkerFaceColor', 'red');
+text(sink.x, sink.y,'  BS','Color','b','FontWeight','b');
+hold on;
+grid on;
+save('mazumdar2.mat');
