@@ -1,0 +1,12 @@
+clear all;
+close all;
+clc;
+load('mazumdar');
+figure(1);
+[x1,y1] = plotmf(fis3,'output',1);
+plot(x1,y1,'LineWidth',2);
+grid on;
+set(gca,'GridLineStyle','--');
+ylabel('Degree of membership','FontWeight','bold','FontAngle','italic');
+xlabel('Cluster Radius','FontWeight','bold','FontAngle','italic');
+k=legend('V V Small','V Small','Med Small','Medium','Med Long','Fairly Long','Long','V Long','Location','west');
