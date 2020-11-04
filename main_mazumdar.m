@@ -4,7 +4,7 @@ clc;
 
 % figure(1);
 
-load('mazumdar.mat');
+load('newtest1.mat');
 
 figure(1);
 DEAD = 0;
@@ -56,7 +56,9 @@ for r=1:1:4000
             % compute Td 
             Energy_level = S(i).RE/S(i).Initial_energy;
             S(i).Fuzzy_fitness1 = evalfis([Energy_level S(i).distoBS], fis1);
+            % S(i).Fuzzy_fitness1 = DINHTUYENDABUOC_fitness1(Energy_level, S(i).distoBS);
             S(i).Fuzzy_fitness2 = evalfis([S(i).neigh_des S(i).neigh_cost], fis2);
+            % S(i).Fuzzy_fitness2 = DINHTUYENDABUOC_fitness2(S(i).neigh_des, S(i).neigh_cost);
             alpha = rand(1,1)/10 + 0.9;
             S(i).Td = alpha * (1 - S(i).Fuzzy_fitness1) * Tc;       
             S(i).candidate = [];
@@ -65,6 +67,45 @@ for r=1:1:4000
         end
     end
     %Start bau CH
+    
+    %==========================FIBONACCI=============================================
+    % Set sink level
+    % R_priv: Bán kính riêng của từng node
+
+
+    sink.level = [5 10 15 20 25 30];
+    for i=1:1:n
+        if  S(i).type == 'CH'
+            for t=1:1:length(sink.level)
+                if S(i).distoBS <= sink.level(t)
+                    S(i).R_priv = sink.level(t);
+                end
+            end
+
+            % Append CH to candidate
+            for j=1:1:n
+                if S(j).type == 'W'
+                    distance = norm([S(i).xd-S(j).xd S(i).yd-S(j).yd]);
+                    if distance < S(i).R_priv
+                        % S(j).candidate.append = [CH];
+                    end
+                end
+            end
+
+            % Chon CH theo nang luong
+            for k=1:1:n
+                if S(k).type == 'W'
+                    for z=1:1:length(S(k).candidate)
+                        x = max(S(k).candidate(z).RE)
+                    end
+                end
+            end
+
+        end
+    end
+
+    %==========================END_FIBONACCI=========================================
+
     %Sap xep S(i) theo chieu tang dan cua Td
     [x,idx] = sort([S.Td]);
     S = S(idx);
@@ -73,7 +114,8 @@ for r=1:1:4000
           if S(i).type == 'W'
               continue;
           else
-              S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2],fis3);
+              S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2], fis3);
+            %   S(i).rad = DINHTUYENDABUOC_fitness3(S(i).Fuzzy_fitness1, S(i).Fuzzy_fitness2);
               S(i).type = 'CH';
 %               plot(S(i).xd,S(i).yd,'k*');
               for t=1:1:n
@@ -146,28 +188,32 @@ for r=1:1:4000
     %------End Routing--------
     
     %Reduce energy
+    
     for i=1:1:n
-         if isequal(S(i).type,'W') && (S(i).RE >0)
-             CH = S(i).candidate;
-             disToCH = sqrt((S(i).xd-S(CH).xd)^2 + (S(i).yd-S(CH).yd)^2 );
-             S(i).RE = S(i).RE - bit*(ETX + Efs*(disToCH*disToCH));
-         end
-         if (isequal(S(i).type,'CH')) && (S(i).RE > 0)
+        S(i).GreedyToBS = norm([S(i).xd-50 S(i).yd-50]);
+         
+        S(i).Fuzzy_Fitness3 = evalfis([S(i).angle S(i).GreedyToBS], fis);
+        if isequal(S(i).type,'W') && (S(i).RE >0)
+            CH = S(i).candidate;
+            disToCH = sqrt((S(i).xd-S(CH).xd)^2 + (S(i).yd-S(CH).yd)^2 );
+            S(i).RE = S(i).RE - bit*(ETX + Efs*(disToCH*disToCH));
+        end
+        if (isequal(S(i).type,'CH')) && (S(i).RE > 0)
 %               Nang luong nhan cua CH
-                 S(i).RE = S(i).RE - S(i).number_worker*bit*ETX;
+            S(i).RE = S(i).RE - S(i).number_worker*bit*ETX;
 %                  [distance, path] = dijkstra(All_CH, segments, S(i).id, 101);
-                 path = Greedy(All_CH,S(i).id,60,Rmax);
+            path = Greedy(All_CH, S(i).id, 60, S(i).GreedyToBS);
 %               Tinh nang luong truyen cua CH
-                 if isnan(path)
-                     S(i).RE = S(i).RE - bit*(ETX + Efs * (S(i).distoBS^2));
-                 else
-                     for q = 1:1:length(path)-1
-                         distance_path = norm([S(path(q)).xd-S(path(q+1)).xd S(path(q)).yd-S(path(q+1)).yd]);
-                         S(path(q+1)).RE = S(path(q+1)).RE - (ETX + Efs*(distance_path^2) + ETX)*S(path(q)).number_worker*bit*10^-1;
-                         S(path(q)).RE = S(path(q)).RE - S(path(q)).number_worker*bit*(ETX + Efs * (distance_path^2));
-                     end
-                 end
-         end
+            if isnan(path)
+                S(i).RE = S(i).RE - bit*(ETX + Efs * (S(i).distoBS^2));
+            else
+                for q = 1:1:length(path)-1
+                    distance_path = norm([S(path(q)).xd-S(path(q+1)).xd S(path(q)).yd-S(path(q+1)).yd]);
+                    S(path(q+1)).RE = S(path(q+1)).RE - (ETX + Efs*(distance_path^2) + ETX)*S(path(q)).number_worker*bit*10^-1;
+                    S(path(q)).RE = S(path(q)).RE - S(path(q)).number_worker*bit*(ETX + Efs * (distance_path^2));
+                end
+            end
+        end
     end
     [S.RE]
 end
