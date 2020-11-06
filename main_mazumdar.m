@@ -66,8 +66,51 @@ for r=1:1:4000
 %             hold on;
         end
     end
+    
     %Start bau CH
     
+    %Sap xep S(i) theo chieu tang dan cua Td
+    sink.level = 3.85 * [1 2 3 5 8 13 21];
+    [x,idx] = sort([S.Td]);
+    S = S(idx);
+    %Candidate bang ban kinh fibonacci
+
+    for i=1:1:n
+        if S(i).RE > 0
+          if isequal(S(i).type, "W")
+              continue;
+          else
+            for t=1:1:length(sink.level)
+                if S(i).distoBS <= sink.level(t)
+                    S(i).rad = sink.level(t);
+                end
+            end
+            %   S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2], fis3);
+            %   S(i).rad = DINHTUYENDABUOC_fitness3(S(i).Fuzzy_fitness1, S(i).Fuzzy_fitness2);
+              S(i).type = 'CH';
+%               plot(S(i).xd,S(i).yd,'k*');
+              for t=1:1:n
+                distance = norm([S(i).xd-S(t).xd S(i).yd-S(t).yd]);
+                if distance <= S(i).rad && distance > 0 && (S(i).RE>0)
+                  S(t).candidate = [S(t).candidate S(i).id];
+                  S(t).type = 'W';
+                end
+              end
+          end
+        end
+    end
+
+    for i=1:1:n
+        if isequal(S(i).type, "W")
+            for z=1:1:length(S(i).candidate)
+                list_RE = [S([S(i).candidate]).RE];
+                [result, index] = max(list_RE);
+                S(i).candidate = S(S(i).candidate(index));
+                S(i).CH = S(i).candidate;
+            end
+    end
+    %Remember to sort S
+
     %==========================FIBONACCI=============================================
     % Set sink level
     % R_priv: Bán kính riêng của từng node
@@ -105,31 +148,6 @@ for r=1:1:4000
     end
 
     %==========================END_FIBONACCI=========================================
-
-    %Sap xep S(i) theo chieu tang dan cua Td
-    [x,idx] = sort([S.Td]);
-    S = S(idx);
-    for i=1:1:n
-        if S(i).RE > 0
-          if S(i).type == 'W'
-              continue;
-          else
-              S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2], fis3);
-            %   S(i).rad = DINHTUYENDABUOC_fitness3(S(i).Fuzzy_fitness1, S(i).Fuzzy_fitness2);
-              S(i).type = 'CH';
-%               plot(S(i).xd,S(i).yd,'k*');
-              for t=1:1:n
-                distance = norm([S(i).xd-S(t).xd S(i).yd-S(t).yd]);
-                if distance <= S(i).rad && distance > 0 && (S(i).RE>0)
-                  k = length(S(t).candidate) + 1;
-                  S(t).candidate(k) = S(i).id;
-                  S(t).type = 'W';
-                end
-              end
-          end
-        end
-    end
-    %Remember to sort S
     [x,idx] = sort([S.id]);
     S = S(idx);
     for i=1:1:n
