@@ -4,7 +4,7 @@ clc;
 
 % figure(1);
 
-load('newtest1.mat');
+load('wsn.mat');
 
 figure(1);
 DEAD = 0;
@@ -68,6 +68,32 @@ for r=1:1:4000
     end
     %Start bau CH
     
+
+
+    %Sap xep S(i) theo chieu tang dan cua Td
+    [x,idx] = sort([S.Td]);
+    S = S(idx);
+    for i=1:1:n
+        if S(i).RE > 0
+          if S(i).type == 'W'
+              continue;
+          else
+              S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2], fis3);
+            %   S(i).rad = DINHTUYENDABUOC_fitness3(S(i).Fuzzy_fitness1, S(i).Fuzzy_fitness2);
+              S(i).type = 'CH';
+%               plot(S(i).xd,S(i).yd,'k*');
+              for t=1:1:n
+                distance = norm([S(i).xd-S(t).xd S(i).yd-S(t).yd]);
+                if distance <= S(i).rad && distance > 0 && (S(i).RE>0)
+                  S(t).type = 'W';
+                end
+              end
+          end
+        end
+    end
+    %Remember to sort S
+    [x,idx] = sort([S.id]);
+    S = S(idx);
     %==========================FIBONACCI=============================================
     % Set sink level
     % R_priv: Bán kính riêng của từng node
@@ -85,9 +111,9 @@ for r=1:1:4000
             % Append CH to candidate
             for j=1:1:n
                 if S(j).type == 'W'
-                    distance = norm([S(i).xd-S(j).xd S(i).yd-S(j).yd]);
-                    if distance < S(i).R_priv
-                        % S(j).candidate.append = [CH];
+                    distTOCH = norm([S(i).xd-S(j).xd S(i).yd-S(j).yd]);
+                    if distTOCH < S(i).R_priv
+                        S(j).candidate = [S(j).candidate S(i).id];
                     end
                 end
             end
@@ -95,8 +121,11 @@ for r=1:1:4000
             % Chon CH theo nang luong
             for k=1:1:n
                 if S(k).type == 'W'
-                    for z=1:1:length(S(k).candidate)
-                        x = max(S(k).candidate(z).RE)
+                    for z=1:1:length(S(k).candidate) 
+                        x = [S(S(k).candidate).RE];
+                        [a b] = max(x);
+                        S(k).candidate = S(S(k).candidate(b)).id;
+                        S(k).CH = S(k).candidate;
                     end
                 end
             end
@@ -105,51 +134,6 @@ for r=1:1:4000
     end
 
     %==========================END_FIBONACCI=========================================
-
-    %Sap xep S(i) theo chieu tang dan cua Td
-    [x,idx] = sort([S.Td]);
-    S = S(idx);
-    for i=1:1:n
-        if S(i).RE > 0
-          if S(i).type == 'W'
-              continue;
-          else
-              S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2], fis3);
-            %   S(i).rad = DINHTUYENDABUOC_fitness3(S(i).Fuzzy_fitness1, S(i).Fuzzy_fitness2);
-              S(i).type = 'CH';
-%               plot(S(i).xd,S(i).yd,'k*');
-              for t=1:1:n
-                distance = norm([S(i).xd-S(t).xd S(i).yd-S(t).yd]);
-                if distance <= S(i).rad && distance > 0 && (S(i).RE>0)
-                  k = length(S(t).candidate) + 1;
-                  S(t).candidate(k) = S(i).id;
-                  S(t).type = 'W';
-                end
-              end
-          end
-        end
-    end
-    %Remember to sort S
-    [x,idx] = sort([S.id]);
-    S = S(idx);
-    for i=1:1:n
-      if isequal(S(i).type,'W') && (S(i).RE >0) && ~isempty(S(i).candidate)
-        CH_cost = 0;
-        for t=1:1:length(S(i).candidate)
-          distoCH = norm([S(i).xd-S(S(i).candidate(t)).xd S(i).yd-S(S(i).candidate(t)).yd]);
-          CH_cost(t) = distoCH * S(S(i).candidate(t)).distoBS/S(S(i).candidate(t)).RE;
-        end
-        k = find(CH_cost==min(CH_cost));
-        S(i).candidate = S(i).candidate(k);
-      end
-    end
-    for i=1:1:n
-        if isequal(S(i).type, 'CH') && S(i).RE >0
-            x = [S.candidate];
-            tf1 = x == S(i).id;
-            S(i).number_worker = sum(tf1==1);
-        end
-    end
     %----End Cluster----
     
     %----Begin Routing-----
@@ -202,7 +186,7 @@ for r=1:1:4000
 %               Nang luong nhan cua CH
             S(i).RE = S(i).RE - S(i).number_worker*bit*ETX;
 %                  [distance, path] = dijkstra(All_CH, segments, S(i).id, 101);
-            path = Greedy(All_CH, S(i).id, 60, S(i).GreedyToBS);
+            % path = Greedy(All_CH, S(i).id, 60, S(i).GreedyToBS);
 %               Tinh nang luong truyen cua CH
             if isnan(path)
                 S(i).RE = S(i).RE - bit*(ETX + Efs * (S(i).distoBS^2));
