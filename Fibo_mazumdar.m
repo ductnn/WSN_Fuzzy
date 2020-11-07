@@ -1,12 +1,12 @@
 clear All;
 close all;
 clc;
-load('wsn.mat');
+load('mazumdar2.mat');
 % figure(1);
 DEAD = 0;
-S(n+1).yd = 0;
+S(n+1).yd = 50;
 Rmax = 30;
-for r= 1:1:4000
+for r= 1:1:2000
 % Compute Neigbor desity & neighbor cost
     r
     dead = 0;
@@ -32,7 +32,7 @@ for r= 1:1:4000
     DEAD(r) = dead;
     for i=1:1:n
         if S(i).RE > 0
-            S(i).distoBS = norm([S(i).xd-50 S(i).yd-0]);
+            S(i).distoBS = norm([S(i).xd-50 S(i).yd-50]);
             number_neighbor_i = 0;
             sigma_neigh_cost = 0;
             for j=1:1:n
@@ -53,7 +53,7 @@ for r= 1:1:4000
             % compute Td 
             Energy_level = S(i).RE/S(i).Initial_energy;
             S(i).Fuzzy_fitness1 = evalfis([Energy_level S(i).distoBS], fis1);
-            S(i).Fuzzy_fitness2 = evalfis([S(i).neigh_des S(i).neigh_cost], fis2);
+            % S(i).Fuzzy_fitness2 = evalfis([S(i).neigh_des S(i).neigh_cost], fis2);
             alpha = rand(1,1)/10 + 0.9;
             S(i).Td = alpha * (1 - S(i).Fuzzy_fitness1) * Tc;       
             S(i).candidate = [];
@@ -65,19 +65,31 @@ for r= 1:1:4000
     %Start bau CH
     %Sap xep S(i) theo chieu tang dan cua Td
 
-    [x,idx] = sort([S.Td]);
+    [x, idx] = sort([S.Td]);
     S = S(idx);
-    sink.level = 5 * [1 2 3 5 8];
+    sink.level = [15 20 25 30];
     for i=1:1:n
         if S(i).RE > 0
           if isequal(S(i).type, 'W')
               continue;
           else
+            if isequal(S(i).type, 'N')
               for t=1:1:length(sink.level)
-                    if S(i).distoBS <= sink.level(t)
-                        S(i).rad = sink.level(t);
+                    if S(i).distoBS <= 10 
+                        S(i).rad = 0.9 * 13;
+                    elseif S(i).distoBS <= 15 && S(i).distoBS > 10
+                        S(i).rad = 0.9 * 8;
+                    elseif S(i).distoBS <= 20 && S(i).distoBS > 15
+                        S(i).rad = 0.9 * 5; 
+                    elseif S(i).distoBS <= 25 && S(i).distoBS > 20
+                        S(i).rad = 0.9 * 3;
+                    elseif S(i).distoBS <= 30 && S(i).distoBS > 25
+                        S(i).rad = 0.9 * 2;
+                    else
+                        S(i).rad = 0.9 * 1;
                     end
               end
+            end
             %   S(i).rad = evalfis([S(i).Fuzzy_fitness1 S(i).Fuzzy_fitness2],fis3);
               S(i).type = 'CH';
 %               plot(S(i).xd,S(i).yd,'k*');
