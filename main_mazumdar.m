@@ -4,7 +4,7 @@ clc;
 
 % figure(1);
 
-load('wsn.mat');
+load('mazumdar2.mat');
 
 figure(1);
 DEAD = 0;
