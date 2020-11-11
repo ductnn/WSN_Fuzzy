@@ -1,7 +1,7 @@
 clear all;
 close all;
 clc;
-load('mazumdar');
+load('fibo_test_1');
 figure(1);
 [x1,y1] = plotmf(fis1,'input',1);
 plot(x1,y1,'LineWidth',2);
@@ -15,7 +15,7 @@ figure(2);
 plot(x2,y2,'LineWidth',2);
 ylabel('Degree of membership','FontWeight','bold','FontAngle','italic');
 xlabel('Distance to Base station(BS)','FontWeight','bold','FontAngle','italic');
-legend('Near','Modarate','Distant');
+legend('Near','Moderate','Distant');
 grid on;
 set(gca,'GridLineStyle','--');
 figure(3);
